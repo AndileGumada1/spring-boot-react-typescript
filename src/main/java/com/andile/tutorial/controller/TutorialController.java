@@ -5,16 +5,17 @@ import com.andile.tutorial.service.TutorialServiceImplementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/tutorials")
 @RequiredArgsConstructor
-
+@CrossOrigin("http://localhost:3000/")
 public class TutorialController {
        private final TutorialServiceImplementation serviceImplementation;
         private final ObjectMapper mapper;
@@ -26,19 +27,19 @@ public class TutorialController {
     }
     @GetMapping("/list")
     public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String title) throws JsonProcessingException {
-        System.out.println(mapper.writeValueAsString(title));
+        log.info(mapper.writeValueAsString(title));
         List<Tutorial> tutorials =serviceImplementation.list(title);
         return new ResponseEntity<>(tutorials,HttpStatus.OK);
     }
     @GetMapping("/find/{id}")
     public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) throws JsonProcessingException {
-        System.out.println(mapper.writeValueAsString("Getting Tutorial with :"+id));
+        log.info(mapper.writeValueAsString("Getting Tutorial with :"+id));
         Tutorial tutorial = serviceImplementation.findById(id);
         return new ResponseEntity<>(tutorial,HttpStatus.OK);
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial) throws JsonProcessingException {
-        System.out.println(mapper.writeValueAsString("Updating tutorial with id"+tutorial.getId()));
+        log.info(mapper.writeValueAsString("Updating tutorial with id"+tutorial.getId()));
         Tutorial update = serviceImplementation.update(id, tutorial);
         return new ResponseEntity<>(update,HttpStatus.OK);
     }
@@ -47,10 +48,10 @@ public class TutorialController {
         System.out.println(mapper.writeValueAsString("deleteTutorial with :"+id));
         serviceImplementation.deleteById(id);
     }
-//    @DeleteMapping("/tutorials")
-//    public ResponseEntity<Void> deleteAllTutorials() {
-//        return new ResponseEntity<>serviceImplementation.deleteAll();
-//    }
+    @DeleteMapping("/deleteAll")
+    public void deleteAllTutorials() {
+        serviceImplementation.deleteAll();
+    }
     @GetMapping("/published")
     public ResponseEntity<List<Tutorial>> findByPublished() throws JsonProcessingException {
         List<Tutorial> tutorialList = serviceImplementation.findByPublished();

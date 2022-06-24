@@ -53,15 +53,12 @@ public class TutorialServiceImplementation implements TutorialService {
 
     @Override
     public List<Tutorial> findByPublished() {
-        try {
+
             List<Tutorial> tutorials = tutorialRepository.findByPublished(true);
             if (tutorials.isEmpty()) {
-                return tutorials;
-            }
             throw new TutorialNotFoundException("");
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+            }
+        return tutorials;
     }
 
     @Override
@@ -80,7 +77,7 @@ public class TutorialServiceImplementation implements TutorialService {
 
     @Override
     public void deleteAll() {
-        tutorialRepository.deleteAll();
+       this.tutorialRepository.deleteAll();
     }
 
 
